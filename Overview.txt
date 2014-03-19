@@ -1,46 +1,54 @@
-Before I move on to explain the implementation details it would be really good that I explain the basics of the paper so that you could easily understand the implementation part later.
+Before I move on to explain the implementation details it would be really good that I explain the basics of the paper so
+that you could easily understand the implementation part later.
+
 Some basic terms used:
 1.	Special binary tree: This binary tree has 30 internal nodes, 1 leaf node, and every internal node has only one child.
-2.	Primitive feature images: It includes the input image and 15 other images which are derived from original image. The 15 derived images are as follows:
-a)	First three emerge when a 3x3,5x5,7x7 template is passed over the image turn by turn and the centre pixel of the template(basically an image pixel) is replace by the mean over the template.
-b)	Next three emerge when we subtract the original image pixel value with the corresponding pixel value of the above three generated feature images.
-c)	Next three emerge when again a 3x3,5x5,7x7 template is passed over the image turn by turn and the centre pixel of the template(basically an image pixel) is replace by the maximum valued pixel over the template.
-d)	Next three emerge when again a 3x3,5x5,7x7 template is passed over the image turn by turn and the centre pixel of the template(basically an image pixel) is replace by the minimum valued pixel over the template.
-e)	The final three emerge when again a 3x3,5x5,7x7 template is passed over the image turn by turn and the centre pixel of the template(basically an image pixel) is replace by the median over the template.
-3.	Primitive Operators: These are some pre-defined operators which either work on two input images or on a single input. Every action done by these operators is pixel-by-pixel basis. Genetic programming uses these primitive operators to compute the composite operator. The result image from the operator is stored in a separate location. The table below shows the list of 17 primitive operators(c is a constant between -20 and 20,A and B are input images of same size)
+2.	Primitive feature images: It includes the input image and 15 other images which are derived from original image. 
+The 15 derived images are as follows:
+ a)	First three emerge when a 3x3,5x5,7x7 template is passed over the image turn by turn and the centre pixel of the
+    template(basically an image pixel) is replace by the mean over the template.
+ b)	Next three emerge when we subtract the original image pixel value with the corresponding pixel value of the above 
+    three generated feature images.
+ c)	Next three emerge when again a 3x3,5x5,7x7 template is passed over the image turn by turn and the centre pixel 
+    of the template(basically an image pixel) is replace by the maximum valued pixel over the template.
+ d)	Next three emerge when again a 3x3,5x5,7x7 template is passed over the image turn by turn and the centre pixel of 
+    the template(basically an image pixel) is replace by the minimum valued pixel over the template.
+ e)	The final three emerge when again a 3x3,5x5,7x7 template is passed over the image turn by turn and the centre 
+    pixel of the template(basically an image pixel) is replace by the median over the template.
+3.	Primitive Operators: These are some pre-defined operators which either work on two input images or on a single input. 
+                       Every action done by these operators is pixel-by-pixel basis. Genetic programming uses these 
+                       primitive operators to compute the composite operator. The result image from the operator is 
+                       stored in a separate location.The table below shows the list of 17 primitive 
+                       operators(c is a constant between -20 and 20,A and B are input images of same size)
 
+No	Operator	     Description
+1 	ADD (A, B) 	  Add images A and B. 
+2 	SUB (A, B) 	  Sub image B from A. 
+3 	MUL (A, B) 	  Multiply images A and B. 
+4 	DIV (A, B) 	  Divide image A by image B (If the pixel in B has value 0, the corresponding pixel in the resultant image takes the maximum pixel value in A). 
+5 	MAX2 (A, B) 	 The pixel in the resultant image takes the larger pixel value of images A and B. 
+6 	MIN2 (A, B) 	 The pixel in the resultant image takes the smaller pixel value of images A and B. 
+7 	ADDC (A) 	    Increase each pixel value by c. 
+8 	SUBC (A) 	    Decrease each pixel value by c. 
+9 	MULC (A) 	    Multiply each pixel value by c. 
+10 	DIVC (A) 	   Divide each pixel value by c. 
+11 	SQRT (A) 	   For each pixel with value v, if v ≥ 0, change its value tov. Otherwise, to v−−. 
+12 	LOG (A) 	    For each pixel with value v, if v ≥ 0, change its value to ln(v). Otherwise, to –ln(-v). 
+13 	MAX (A) 	    Replace the pixel value by the maximum pixel value in a 3×3, 5×5 or 7×7 neighbourhood. 
+14 	MIN (A) 	    Replace the pixel value by the minimum pixel value in a 3×3, 5×5 or 7×7 neighbourhood. 
+15 	MED (A) 	    Replace the pixel value by the median pixel value in a 3×3, 5×5 or 7×7 neighbourhood. 
+16 	MEAN (A) 	   Replace the pixel value by the average pixel value of a 3×3, 5×5 or 7×7 neighbourhood. 
+17 	STDV (A) 	   Replace the pixel value by the standard deviation of pixels in a 3×3, 5×5 or 7×7 neighbourhood. 
 
+4.	Composite operator: These are trees formed by any primitive feature image as the parent node and images obtained on 
+                      passing primitive operators as intermediate nodes and a leaf again having an image obtained on passing a primitive operator. The parent image and the rest of the primitive operators are chosen by the genetic algorithm on a steady state basis. It can be visualised as if a primitive operator is present at every node to play upon the image sent to it by a previous primitive operator. The size of tree is preferred to be 17 with a depth of 16. 
 
-
-
-
-
-
-
-
-
-No	Operator	Description
-1 	ADD (A, B) 	Add images A and B. 
-2 	SUB (A, B) 	Sub image B from A. 
-3 	MUL (A, B) 	Multiply images A and B. 
-4 	DIV (A, B) 	Divide image A by image B (If the pixel in B has value 0, the corresponding pixel in the resultant image takes the maximum pixel value in A). 
-5 	MAX2 (A, B) 	The pixel in the resultant image takes the larger pixel value of images A and B. 
-6 	MIN2 (A, B) 	The pixel in the resultant image takes the smaller pixel value of images A and B. 
-7 	ADDC (A) 	Increase each pixel value by c. 
-8 	SUBC (A) 	Decrease each pixel value by c. 
-9 	MULC (A) 	Multiply each pixel value by c. 
-10 	DIVC (A) 	Divide each pixel value by c. 
-11 	SQRT (A) 	For each pixel with value v, if v ≥ 0, change its value tov. Otherwise, to v−−. 
-12 	LOG (A) 	For each pixel with value v, if v ≥ 0, change its value to ln(v). Otherwise, to –ln(-v). 
-13 	MAX (A) 	Replace the pixel value by the maximum pixel value in a 3×3, 5×5 or 7×7 neighbourhood. 
-14 	MIN (A) 	Replace the pixel value by the minimum pixel value in a 3×3, 5×5 or 7×7 neighbourhood. 
-15 	MED (A) 	Replace the pixel value by the median pixel value in a 3×3, 5×5 or 7×7 neighbourhood. 
-16 	MEAN (A) 	Replace the pixel value by the average pixel value of a 3×3, 5×5 or 7×7 neighbourhood. 
-17 	STDV (A) 	Replace the pixel value by the standard deviation of pixels in a 3×3, 5×5 or 7×7 neighbourhood. 
-
-4.	Composite operator: These are trees formed by any primitive feature image as the parent node and images obtained on passing primitive operators as intermediate nodes and a leaf again having an image obtained on passing a primitive operator. The parent image and the rest of the primitive operators are chosen by the genetic algorithm on a steady state basis. It can be visualised as if a primitive operator is present at every node to play upon the image sent to it by a previous primitive operator. The size of tree is preferred to be 17 with a depth of 16. 
-
-5.	Fitness measure: Now with genetic programming a huge amount of composite feature operators will be generated. So, to give them a rank this fitness measure is introduced. Let G be the foreground in the ground truth image and G’ be the foreground in the composite feature image formed from the primitive feature image after being passed over by the composite feature operator. Let n(X) be the number of pixels within a region X. Therefore, the fitness measure of that composite operator will be n(G∩G’) / n(G U G’). 
+5.	Fitness measure: Now with genetic programming a huge amount of composite feature operators will be generated. 
+                   So, to give them a rank this fitness measure is introduced. 
+                   Let G be the foreground in the ground truth image and G’ be the foreground in the composite 
+                   feature image formed from the primitive feature image after being passed over by the composite 
+                   feature operator. Let n(X) be the number of pixels within a region X. Therefore, the fitness 
+                   measure of that composite operator will be n(G∩G’) / n(G U G’). 
 
 6.	Some other parameters:
 
@@ -50,15 +58,29 @@ c)	Crossover rate
 d)	Mutation rate
 e)	Fitness threshold
 
-7.	Selection: It is the process of selecting a composite operator from current population of composite operators generated. The number of individuals are randomly selected and the one with highest fitness value is copied to new population.
-8.	Code bloat problem: This is the basic problem in generation using genetic algorithm. In this the sizes of composite parameters by crossover may become very large. This slows down the process and consumes a lot of memory.
-9.	Crossover: It is a process similar to gene crossovers. First we select two composite operators on the basis of good fitness measures and term them as parents. Then one internode in each parent is selected randomly and the two subtrees rooted at that node are exchanged to generate two new composite operators called offspring. Here many times code bloat problem occurs, so, as a remedy they have come up with limiting the operator size with a soft size limit. If size of offspring > limit, then genetic programming keeps it but evaluates it further. If the evaluation results in best fitness then it is kept otherwise discarded.
-10.	Mutation: This is done to avoid premature convergence which means that the resultant population halted too early with less generations or small generations. It is done in any of three ways:
-a)	Randomly select a node of a composite operator, and replace it(along with the selected node) with a subtree at this node by another operator(tree).
-b)	Randomly select a node of a composite operator, replace the primitive operator stored in the node with any other primitive operator with same input capacity. 
-c)	Select any two subtrees from two operators and swap them.
-11.	Crossover probability/rate: It defines ratio of how many couple composite operators will be taken with respect to the number of couple composite operators present during a devised loop. A couple composite operator is any two operators taken at random. 
-12.	Mutation probability/rate: It sets a maximum limit rate to which a how many mutation method can be applied to single composite operator. If probability is 5% and number of nodes in it 100,then only 5 times mutation will be done. 
+7.	Selection: It is the process of selecting a composite operator from current population of composite operators 
+              generated. The number of individuals are randomly selected and the one with highest fitness value is 
+              copied to new population.
+8.	Code bloat problem: This is the basic problem in generation using genetic algorithm. In this the sizes of composite 
+                       parameters by crossover may become very large. This slows down the process and consumes a lot 
+                       of memory.
+9.	Crossover: It is a process similar to gene crossovers. First we select two composite operators on the basis of good 
+              fitness measures and term them as parents. Then one internode in each parent is selected randomly and 
+              the two subtrees rooted at that node are exchanged to generate two new composite operators called offspring.
+              Here many times code bloat problem occurs, so, as a remedy they have come up with limiting the operator 
+              size with a soft size limit. If size of offspring > limit, then genetic programming keeps it but evaluates 
+              it further. If the evaluation results in best fitness then it is kept otherwise discarded.
+10.	Mutation: This is done to avoid premature convergence which means that the resultant population halted too early 
+             with less generations or small generations. It is done in any of three ways:
+             a)	Randomly select a node of a composite operator, and replace it(along with the selected node) with a subtree at this node by another operator(tree).
+             b)	Randomly select a node of a composite operator, replace the primitive operator stored in the node with any other primitive operator with same input capacity. 
+             c)	Select any two subtrees from two operators and swap them.
+11.	Crossover probability/rate: It defines ratio of how many couple composite operators will be taken with respect 
+                               to the number of couple composite operators present during a devised loop. 
+                               A couple composite operator is any two operators taken at random. 
+12.	Mutation probability/rate: It sets a maximum limit rate to which a how many mutation method can be applied to 
+                               single composite operator. If probability is 5% and number of nodes in it 100,
+                               then only 5 times mutation will be done. 
 
 
  

@@ -4,7 +4,7 @@ Please read the “OVERVIEW” section before this one. Thank you for your patie
 Input: 
    1.	Synthetic Aperture Radar[SAR] 128x128 images
    2.	Infrared 160x120 images
-   3.	RDB 160x160 images
+   3.	RGB 160x160 images
 Parameters:
    1.	Population size = 100
    2.	Number of generations = 70

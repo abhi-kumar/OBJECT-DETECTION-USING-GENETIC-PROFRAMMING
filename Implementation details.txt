@@ -1,0 +1,92 @@
+This section will include how I am going to implement the paper towards OpenCV. Please read the “OVERVIEW” section before this one. Thank you for your patience.
+Input: 
+1.	Synthetic Aperture Radar[SAR] 128x128 images
+2.	Infrared 160x120 images
+3.	RDB 160x160 images
+Parameters:
+1.	Population size = 100
+2.	Number of generations = 70
+3.	Fitness threshold =70
+4.	Crossover rate/probability = 0.6
+5.	Mutation rate/probability  = 0.05
+6.	Soft size limit = 30
+7.	Co-ordinate of upper left corner of image = (0,0)
+8.	Number of times ground truth invoked = 10
+Phase 1:
+This phase includes setting up of terminals. That is developing methods which work on generating the 16 primitive features. I would prefer developing 16 different methods to do this task as these methods is not included in the training period.
+Phase 2:
+This phase includes developing methods that would be used to facilitate the work of primitive operators. First these functions would be defined and tested. Finally after total satisfactory working of these methods they would be put up into classes from where they will be fetched whenever needed.
+Phase 3:
+This is the phase where I will design the fitness measurement method. It will be tested using an image which has gone through a set of primitive operators and the respective ground truth of the input image. Also in this phase we define the parameters in the main code.
+Phase 4:
+This is the phase where I will create a model whose function will be generating the pre-determined number of composite features randomly using the primitive features and primitive operators. This will basically generate the population of size M. Various populations will be evaluated in the training phase to get the best composite operator form each and then from this special selected population the best one will be chosen from final training.
+
+
+Phase 5:
+In this phase I will be working on creating a method that will work as a crossover. It will include the entire task as mentioned above in the previous section where I also explained about crossover. This method would also include the constraints and the ways which would reduce the code bloat problem 
+Phase 6:
+This phase will be used to facilitate the mutation model. So, basically I will define three methods based on the three ways stating how mutation is done to a set of composite operator.
+
+Phase 7:
+This is the main training phase where training an image will be done by any both the below mentioned methods and the one with the best results will be used.
+Methods:
+1)	Steady state genetic programming
+2)	Generative genetic programming
+First I will go with implementing Steady state genetic programming and then Generative genetic programming.
+Phase 7-1:
+Woking with the steady state genetic programming. The following sub-phases define how my training method will function after implementation:
+Phase 7-1-1:
+a)	Take one generation.
+b)	Evaluate the fitness value.
+c)	Keep the best composite operator in a Population named P.
+Phase 7-1-2:
+a)	Select two parent composite operators on the basis of their fitness (Greater fitness).
+b)	Passing these operators over the crossover method to get two children (off-springs) named as replacement operators.
+c)	Select two other composite operators with smallest fitness values.
+d)	The two offspring’s fitness values are evaluated and as per their superiority over the replacement operators the replacement operators are discarded, i.e. if the fitness values of offsprings are greater than the replacements then only the replacements are discarded.
+e)	 Then take other two operators are parents and repeat a) to d)
+f)	Repeat a) to f) till the crossover rate is reached.
+Phase 7-1-3:
+a)	Mutation method is applied on each composite operator of the newly developed population in the Phase 7-1-2, with a probability of mutation rate.
+b)	Evaluate every mutated composite operator.
+c)	Finally a new Population is developed P’.
+Phase   7-1-4:
+a)	The worst composite operator from new Population P’ is replaced by the best composite operator in Population P.
+b)	Store the best composite operator from P’ in P.
+c)	Check each composite operator in P. if its size exceeds the size limit and it is not the best composite operator in P, replace it with one of its subtree whose size is within the size limit.
+Repeat Phases 7-1-3 and 7-1-4 till any composite operator in P has a fitness value greater than the threshold. Place this operator from P.
+Repeat the phases for all the generations.
+Finally the best one from all the generations is taken. Note that each generation stores in P only.   
+   
+Phase 7-2:
+Woking with the steady state genetic programming. The following sub-phases define how my training method will function after implementation:
+Phase 7-2-1:Same as Phase 7-1-1
+Phase 7-2-2:
+a)	Keep the best composite operator in P.
+b)	Apply crossover over composite operators in P till crossover rate is reached.Store every offspring separately.
+c)	Perform mutation over the composite operators in P and the offspring operators from step b till the probability of mutation rate.
+d)	Perform selection on P to select some composite operators. The number of selected composite operator must be M minus the number of composite operators from crossover. 
+
+e)	Combine the composite operators from crossover with those from P to get a new population P’ of the same size as P.
+
+f)	Evaluate offspring from crossover and mutated composite operators.
+
+g)	Let the best composite operator from P replace the worst composite operator in P’ and let P = P’.
+
+Repeat (a) to (g) till the fitness of the best composite operator in P is above fitness threshold.
+
+Repeat the phases for all the generations.
+Finally the best one from all the generations is taken. Note that each generation stores in P only.
+
+Now we have two best composite operators, any one of them could be used.
+
+Phase 8:
+This phase includes testing the best composite operators on the test images from the mentioned data-sets as per the given methods for each data-set.
+
+
+
+
+
+
+
+
